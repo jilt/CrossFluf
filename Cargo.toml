@@ -1,6 +1,11 @@
 [workspace]
 members = [
-    "programs/*"
+    "programs/kyc_hook",
+    "programs/vault",
+]
+exclude = [
+    "programs/fluf",
+    "programs/borrower_sample",
 ]
 resolver = "2"
 

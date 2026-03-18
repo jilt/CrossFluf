@@ -7,9 +7,10 @@
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check"
     },
     "dependencies": {
-        "@coral-xyz/anchor": "^0.29.0",
-        "@solana/spl-token": "^0.4.0",
-        "@solana/web3.js": "^1.89.1"
+        "@coral-xyz/anchor": "^0.31.1",
+        "@solana/spl-token": "^0.4.9",
+        "@solana/spl-token-metadata": "^0.1.6",
+        "@solana/web3.js": "^1.95.0"
     },
     "devDependencies": {
         "@types/bn.js": "^5.1.5",

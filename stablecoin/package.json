@@ -1,0 +1,20 @@
+{
+  "name": "stablecoin-cli",
+  "version": "0.1.0",
+  "description": "CLI for KYC-compliant Token-2022 stablecoin management",
+  "scripts": {
+    "cli": "ts-node cli.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.31.1",
+    "@solana/spl-token": "^0.4.9",
+    "@solana/spl-token-metadata": "^0.1.6",
+    "@solana/web3.js": "^1.95.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.32"
+  }
+}
