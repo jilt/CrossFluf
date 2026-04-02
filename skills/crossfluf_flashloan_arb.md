@@ -75,13 +75,92 @@ liquidity pool as the capital source. Every trade is:
   "from_chain": {
     "type": "string",
     "description": "Source chain for the swap leg. Use 'sol' for Solana-only arb.",
+---
+name: crossfluf_flashloan_arb
+version: 1.0.0
+author: CrossFluf Protocol
+description: >
+  Autonomous flash loan arbitrage agent for the CrossFluf memecoin liquidity
+  pool on Solana. Scans cross-DEX price spreads via Bitget Wallet Skill API,
+  then executes atomic borrow → swap → repay cycles using the CrossFluf
+  on-chain program. 0.5% of every repayment is automatically routed to LP
+  contributors via Token-2022 TransferFeeConfig. Private keys never leave
+  Bitget Wallet.
+chain: solana
+tags: [flashloan, arbitrage, defi, solana, token-2022, amm, memecoin, bitget-wallet]
+license: MIT
+---
+
+# CrossFluf Flash Loan Arbitrage Skill
+
+## Overview
+
+This Skill gives any Bitget Wallet agent the ability to:
+
+1. **Scan** for cross-DEX price spreads on the CrossFluf memecoin using
+   Bitget Wallet's `getSwapPrice` API — read-only, no transaction created.
+2. **Execute** an atomic flash loan cycle when a profitable spread is found:
+   borrow T tokens from the CrossFluf liquidity pool, swap on the cheaper
+   DEX, sell on the more expensive DEX, repay the pool — all in a single
+   Solana transaction that reverts completely if repayment fails.
+
+The two steps are exposed as composable sub-actions so agent runtimes
+(OpenClaw, Manus, Claude) can call the scanner independently for price
+monitoring without committing to a trade.
+
+---
+
+## Prerequisites
+
+| Requirement | Detail |
+|---|---|
+| Bitget Wallet | Connected, Solana network selected |
+| vT vault shares | Must hold ≥ 1 vT to activate agent controls on the web dashboard |
+| BGW credentials | `BGW_PARTNER_CODE`, `BGW_APP_ID`, `BGW_API_SECRET` in env |
+| Solana RPC | `SOLANA_RPC` env var |
+| Program IDs | `FLUF_PROGRAM_ID` from `config/addresses.json` |
+
+---
+
+## Sub-Actions
+
+### Sub-Action 1 — `scan`
+
+Read-only price scan. Calls BGW `getSwapPrice` to detect spread between
+two DEX routes for the CrossFluf memecoin. Safe to call at any frequency —
+no transaction is ever submitted.
+
+**Inputs:**
+
+```json
+{
+  "wallet_address": {
+    "type": "string",
+    "description": "Caller's Solana wallet pubkey (passed to BGW fromAddress).",
+    "required": true
+  },
+  "flash_amount": {
+    "type": "string",
+    "description": "Notional amount in T tokens used for price impact calculation.",
+    "default": "100000",
+    "required": false
+  },
+  "min_spread_bps": {
+    "type": "number",
+    "description": "Minimum gross spread in bps to return a positive opportunity. Must exceed 80 to profit after 50 bps Token-2022 fee and ~30 bps slippage.",
+    "default": 80,
+    "required": false
+  },
+  "from_chain": {
+    "type": "string",
+    "description": "Source chain for the buy leg.",
     "default": "sol",
     "enum": ["sol", "bnb", "eth", "arb"],
     "required": false
   },
   "to_chain": {
     "type": "string",
-    "description": "Destination chain for the swap leg. Cross-chain arb supported up to $200k per order via BGW liqBridge.",
+    "description": "Destination chain for the sell leg. Cross-chain arb supported up to $200k per order via BGW liqBridge.",
     "default": "sol",
     "enum": ["sol", "bnb", "eth", "arb"],
     "required": false
