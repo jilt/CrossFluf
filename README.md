@@ -18,7 +18,7 @@ If you want to go deeper, you stake your fT shares into the CrossFluf vault, rec
 
 ## Two Agent Skills. One Closed Loop.
 
-For the Bitget Wallet Hackathon we are submitting two Skills that compose into a fully autonomous yield machine:
+For the Bitget Wallet track of the Agent economy Hackathon on Solana we are submitting two Skills that compose into a fully autonomous yield machine:
 
 ### Skill 1 — `crossfluf_flashloan_arb`
 
